@@ -1,5 +1,8 @@
 # ember-wufoo-form
 
+
+[![Build Status](https://travis-ci.org/cspanring/ember-wufoo-form.svg?branch=master)](https://travis-ci.org/cspanring/ember-wufoo-form)
+
 A thin wrapper around [Wufoo Forms](http://www.wufoo.com), to make integration in Ember Apps easier.
 
 ## Installation
