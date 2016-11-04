@@ -17,14 +17,21 @@ export default Ember.Component.extend({
   didInsertElement() {
     this._super(...arguments);
 
-    // don't run wufoo iframe content in tests, causing problems
+    let formTarget = get(this, 'target') || `#${get(this, 'elementId')}`;
+
+    if (get(this, 'target')) {
+      // move content to optional target node
+      this.$('div.fallback').appendTo(formTarget);
+    }
+
+    // don't run wufoo iframe content in tests
     let config = Ember.getOwner(this).resolveRegistration('config:environment');
     if (config.environment !== 'test') {
-      this.initWufoo();
+      this.initWufoo(formTarget);
     }
   },
 
-  initWufoo() {
+  initWufoo(formTarget) {
     let formId = get(this, 'formId');
 
     // based on Wufoo form embed code
@@ -43,8 +50,6 @@ export default Ember.Component.extend({
     };
 
     s.src = `${d.location.protocol}//www.wufoo.com/scripts/embed/form.js`;
-
-    let elementId = get(this, 'elementId');
     s.onload = s.onreadystatechange = function() {
 
       let rs = this.readyState;
@@ -65,13 +70,13 @@ export default Ember.Component.extend({
       wufooForm.display = function() {
 
         if (this.async) {
-          document.getElementById(elementId).innerHTML = this.generateFrameMarkup();
+          document.querySelector(formTarget).innerHTML = this.generateFrameMarkup();
         }
         else {
           document.write(this.generateFrameMarkup());
         }
 
-        window.postMessage || this.addEvent(document.getElementById(elementId), "load", this.bindMethod(this.addResizeScript, this));
+        window.postMessage || this.addEvent(document.querySelector(formTarget), "load", this.bindMethod(this.addResizeScript, this));
       };
 
       wufooForm.display();
