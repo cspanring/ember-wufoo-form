@@ -1,7 +1,7 @@
 {
   "name": "ember-wufoo-form",
   "version": "0.0.1",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "A thin wrapper around Wufoo forms for easier integration with Ember.js apps.",
   "directories": {
     "doc": "doc",
     "test": "tests"
