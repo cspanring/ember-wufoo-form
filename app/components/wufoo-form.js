@@ -1,0 +1,1 @@
+export { default } from 'ember-wufoo-form/components/wufoo-form';
