@@ -15,11 +15,16 @@ Install this addon with Ember CLI:
 
 Add the component to one of your templates:
 
-    {{wufoo-form formId="MY_FORM_ID"}}
+    {{wufoo-form
+      formId="FORM_ID"
+      target="FORM_TARGET_SELECTOR"
+    }}
 
 It will inject a script tag to load Wufoo's JavaScript library and an iframe that will display the form.
 
-The `formId` can be found on the "Share a link to your form" page in the Wufoo form admin.
+The required `formId` can be found on the "Share a link to your form" page in the Wufoo form admin.
+
+If an (optional) `target` attribute is provided, the form will render into given selector on the page.
 
 ## Collaboration
 
