@@ -4,7 +4,10 @@
 import Ember from 'ember';
 import layout from '../templates/components/wufoo-form';
 
-const { get } = Ember;
+const {
+  get,
+  computed,
+} = Ember;
 
 export default Ember.Component.extend({
   layout,
@@ -14,44 +17,43 @@ export default Ember.Component.extend({
   attributeBindings: ['data-test-selector'],
   'data-test-selector': 'wufoo-form',
 
+  parentSelector: computed('target', {
+    get() {
+      return get(this, 'target') || `#${get(this, 'elementId')}`;
+    }
+  }),
+
+  formTarget: computed('parentSelector', {
+    get() {
+      return `${get(this, 'parentSelector')} .wufoo-form-container`;
+    }
+  }),
+
   didInsertElement() {
     this._super(...arguments);
 
-    let formTarget = get(this, 'target') || `#${get(this, 'elementId')}`;
-
     if (get(this, 'target')) {
+      let target = get(this, 'target');
       // move content to optional target node
-      this.$('div.fallback').appendTo(formTarget);
+      this.$('.wufoo-form-container').appendTo(target);
     }
 
     // don't run wufoo iframe content in tests
     let config = Ember.getOwner(this).resolveRegistration('config:environment');
     if (config.environment !== 'test') {
-      this.initWufoo(formTarget);
+      this.initWufoo();
     }
   },
 
-  initWufoo(formTarget) {
-    let formId = get(this, 'formId');
-
-    // based on Wufoo form embed code
-    let d = document;
+  initWufoo() {
+    // loosely based on Wufoo's form embed code
     let t = 'script';
-    let s = d.createElement(t);
-    let options = {
-      'userName':'courbanize',
-      'formHash':formId,
-      'autoResize':true,
-      'height':'443',
-      'async':true,
-      'host':'wufoo.com',
-      'header':'show',
-      'ssl':true
-    };
+    let s = document.createElement(t);
+    s.src = `${document.location.protocol}//www.wufoo.com/scripts/embed/form.js`;
 
-    s.src = `${d.location.protocol}//www.wufoo.com/scripts/embed/form.js`;
+    let formId = get(this, 'formId');
+    let formTarget = get(this, 'formTarget');
     s.onload = s.onreadystatechange = function() {
-
       let rs = this.readyState;
 
       if (rs) {
@@ -64,11 +66,21 @@ export default Ember.Component.extend({
 
       let wufooForm = new WufooForm();
 
+      let options = {
+        'userName':'courbanize',
+        'formHash':formId,
+        'autoResize':true,
+        'height':'443',
+        'async':true,
+        'host':'wufoo.com',
+        'header':'show',
+        'ssl':true
+      };
+
       wufooForm.initialize(options);
 
       // override wufoo's method to inject the form into the component container
       wufooForm.display = function() {
-
         if (this.async) {
           document.querySelector(formTarget).innerHTML = this.generateFrameMarkup();
         }
@@ -82,9 +94,13 @@ export default Ember.Component.extend({
       wufooForm.display();
     };
 
-    let scr = d.getElementsByTagName(t)[0];
-    let par = scr.parentNode;
-    par.insertBefore(s, scr);
-  },
+    let formContainer = document.querySelector(get(this, 'formTarget'));
+    let parentNode = document.querySelector(get(this, 'parentSelector'));
 
+    Ember.assert('Wufoo form requires a valid DOM target node to be inserted into.', formContainer && parentNode);
+
+    if (formContainer && parentNode) {
+      parentNode.insertBefore(s, formContainer);
+    }
+  }
 });
