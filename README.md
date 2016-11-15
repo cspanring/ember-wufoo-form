@@ -2,6 +2,7 @@
 
 
 [![Build Status](https://travis-ci.org/cspanring/ember-wufoo-form.svg?branch=master)](https://travis-ci.org/cspanring/ember-wufoo-form)
+[![Ember Observer Score](https://emberobserver.com/badges/ember-wufoo-form.svg)](https://emberobserver.com/addons/ember-wufoo-form)
 
 A thin wrapper around [Wufoo Forms](http://www.wufoo.com), to make integration in Ember Apps easier.
 
