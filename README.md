@@ -21,7 +21,7 @@ Add the component to one of your templates:
       target="FORM_TARGET_SELECTOR"
     }}
 
-It will inject a script tag to load Wufoo's JavaScript library and an iframe that will display the form.
+It will inject a script tag to load Wufoo's JavaScript library, which will add an iframe to display the form.
 
 The required `formId` can be found on the "Share a link to your form" page in the Wufoo form admin.
 
@@ -51,4 +51,4 @@ If an (optional) `target` attribute is provided, the form will render into given
 
 * `ember build`
 
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
