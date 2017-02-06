@@ -1,6 +1,6 @@
 {
   "name": "ember-wufoo-form",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A thin wrapper around Wufoo forms for easier integration with Ember.js apps.",
   "keywords": [
     "ember-addon"
