@@ -1,15 +1,14 @@
-/*jshint -W030 */
 /*global WufooForm */
 
-import Ember from 'ember';
 import layout from '../templates/components/wufoo-form';
 
-const {
-  get,
-  computed,
-} = Ember;
+import Component from '@ember/component';
+import { get } from '@ember/object';
+import { computed } from '@ember/object';
+import { getOwner } from '@ember/application';
+import { assert } from '@ember/debug';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
 
   classNames: ['wufoo-form'],
@@ -39,7 +38,7 @@ export default Ember.Component.extend({
     }
 
     // don't run wufoo iframe content in tests
-    let config = Ember.getOwner(this).resolveRegistration('config:environment');
+    let config = getOwner(this).resolveRegistration('config:environment');
     if (config.environment !== 'test') {
       this.initWufoo();
     }
@@ -49,7 +48,9 @@ export default Ember.Component.extend({
     // loosely based on Wufoo's form embed code
     let t = 'script';
     let s = document.createElement(t);
-    s.src = `${document.location.protocol}//www.wufoo.com/scripts/embed/form.js`;
+    s.src = `${
+      document.location.protocol
+    }//www.wufoo.com/scripts/embed/form.js`;
 
     let formId = get(this, 'formId');
     let formTarget = get(this, 'formTarget');
@@ -82,13 +83,19 @@ export default Ember.Component.extend({
       // override wufoo's method to inject the form into the component container
       wufooForm.display = function() {
         if (this.async) {
-          document.querySelector(formTarget).innerHTML = this.generateFrameMarkup();
-        }
-        else {
+          document.querySelector(
+            formTarget
+          ).innerHTML = this.generateFrameMarkup();
+        } else {
           document.write(this.generateFrameMarkup());
         }
 
-        window.postMessage || this.addEvent(document.querySelector(formTarget), "load", this.bindMethod(this.addResizeScript, this));
+        window.postMessage ||
+          this.addEvent(
+            document.querySelector(formTarget),
+            'load',
+            this.bindMethod(this.addResizeScript, this)
+          );
       };
 
       wufooForm.display();
@@ -97,7 +104,10 @@ export default Ember.Component.extend({
     let formContainer = document.querySelector(get(this, 'formTarget'));
     let parentNode = document.querySelector(get(this, 'parentSelector'));
 
-    Ember.assert('Wufoo form requires a valid DOM target node to be inserted into.', formContainer && parentNode);
+    assert(
+      'Wufoo form requires a valid DOM target node to be inserted into.',
+      formContainer && parentNode
+    );
 
     if (formContainer && parentNode) {
       parentNode.insertBefore(s, formContainer);
