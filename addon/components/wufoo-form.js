@@ -28,6 +28,14 @@ export default Component.extend({
     }
   }),
 
+  init() {
+    this._super(...arguments);
+    assert(
+      '`formId` and `userName` attributes are required.',
+      get(this, 'formId') && get(this, 'userName')
+    );
+  },
+
   didInsertElement() {
     this._super(...arguments);
 
@@ -54,6 +62,7 @@ export default Component.extend({
 
     let formId = get(this, 'formId');
     let formTarget = get(this, 'formTarget');
+    let userName = get(this, 'userName');
     s.onload = s.onreadystatechange = function() {
       let rs = this.readyState;
 
@@ -68,14 +77,17 @@ export default Component.extend({
       let wufooForm = new WufooForm();
 
       let options = {
-        'userName':'courbanize',
-        'formHash':formId,
-        'autoResize':true,
-        'height':'443',
-        'async':true,
-        'host':'wufoo.com',
-        'header':'show',
-        'ssl':true
+        // required
+        userName: userName,
+        formHash: formId,
+        // optional
+        autoResize: true,
+        height: '500',
+        header: 'show',
+        ssl: true,
+        // fixed
+        async: true,
+        host: 'wufoo.com'
       };
 
       wufooForm.initialize(options);
