@@ -34,7 +34,6 @@ If an (optional) `target` attribute is provided, the form will render into given
 * `git clone <repository-url>` this repository
 * `cd ember-wufoo-form`
 * `npm install`
-* `bower install`
 
 ### Running
 
