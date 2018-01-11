@@ -1,6 +1,5 @@
 # ember-wufoo-form
 
-
 [![Build Status](https://travis-ci.org/cspanring/ember-wufoo-form.svg?branch=master)](https://travis-ci.org/cspanring/ember-wufoo-form)
 [![Ember Observer Score](https://emberobserver.com/badges/ember-wufoo-form.svg)](https://emberobserver.com/addons/ember-wufoo-form)
 
@@ -12,20 +11,28 @@ Install this addon with Ember CLI:
 
     ember install ember-wufoo-form
 
-## Usage and Configuration
+## Usage
 
-Add the component to one of your templates:
+The `wufoo-form` component accepts a set of required and optional attributes:
 
     {{wufoo-form
-      formId="FORM_ID"
-      target="FORM_TARGET_SELECTOR"
+      // required
+      formId="<wufoo form id>"
+      userName="<wufoo username>"
+
+      // optional
+      target="<DOM selector where to render the form to"
+
+      // optional parameters, proxied from wufoo embed library
+      autoResize: <default true>,
+      height: <default '500'>,
+      header: <default 'show'>,
+      ssl: <default true>,
     }}
 
-It will inject a script tag to load Wufoo's JavaScript library, which will add an iframe to display the form.
+The component will inject a script tag to load Wufoo's JavaScript embed library, which will add an iframe to display the form.
 
 The required `formId` can be found on the "Share a link to your form" page in the Wufoo form admin.
-
-If an (optional) `target` attribute is provided, the form will render into given selector on the page.
 
 ## Collaboration
 

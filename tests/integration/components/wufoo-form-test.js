@@ -5,11 +5,12 @@ moduleForComponent('wufoo-form', 'Integration | Component | wufoo form', {
   integration: true
 });
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
-
-  this.render(hbs`{{wufoo-form formId='AbCd1234' userName='myaccount'}}`);
+test('it shows fallback link', function(assert) {
+  // load form with fallback content isShowing,
+  // all other functionality depends on successful loading of 3rd party library
+  this.render(
+    hbs`{{wufoo-form formId='AbCd1234' userName='myaccount' isShowingFallback=true}}`
+  );
 
   assert.equal(
     this.$()

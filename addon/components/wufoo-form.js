@@ -3,7 +3,7 @@
 import layout from '../templates/components/wufoo-form';
 
 import Component from '@ember/component';
-import { get, set } from '@ember/object';
+import { get, set, getWithDefault } from '@ember/object';
 import { computed } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
@@ -86,11 +86,11 @@ export default Component.extend({
       userName: get(this, 'userName'),
       formHash: get(this, 'formId'),
       // optional
-      autoResize: true,
-      height: '500',
-      header: 'show',
-      ssl: true,
-      // fixed
+      autoResize: getWithDefault(this, 'autoResize', true),
+      height: getWithDefault(this, 'height', '500'),
+      header: getWithDefault(this, 'header', 'show'),
+      ssl: getWithDefault(this, 'ssl', true),
+      // static
       async: true,
       host: 'wufoo.com'
     };
