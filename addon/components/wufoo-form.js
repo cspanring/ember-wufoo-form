@@ -48,69 +48,15 @@ export default Component.extend({
     // don't run wufoo iframe content in tests
     let config = getOwner(this).resolveRegistration('config:environment');
     if (config.environment !== 'test') {
-      this.initWufoo();
+      this.appendWufooJs();
     }
   },
 
-  initWufoo() {
+  appendWufooJs() {
     // loosely based on Wufoo's form embed code
-    let t = 'script';
-    let s = document.createElement(t);
-    s.src = `${
-      document.location.protocol
-    }//www.wufoo.com/scripts/embed/form.js`;
-
-    let formId = get(this, 'formId');
-    let formTarget = get(this, 'formTarget');
-    let userName = get(this, 'userName');
-    s.onload = s.onreadystatechange = function() {
-      let rs = this.readyState;
-
-      if (rs) {
-        if (rs !== 'complete') {
-          if (rs !== 'loaded') {
-            return;
-          }
-        }
-      }
-
-      let wufooForm = new WufooForm();
-
-      let options = {
-        // required
-        userName: userName,
-        formHash: formId,
-        // optional
-        autoResize: true,
-        height: '500',
-        header: 'show',
-        ssl: true,
-        // fixed
-        async: true,
-        host: 'wufoo.com'
-      };
-
-      wufooForm.initialize(options);
-
-      // override wufoo's method to inject the form into the component container
-      wufooForm.display = function() {
-        if (this.async) {
-          document.querySelector(
-            formTarget
-          ).innerHTML = this.generateFrameMarkup();
-        } else {
-          document.write(this.generateFrameMarkup());
-        }
-
-        window.postMessage ||
-          this.addEvent(
-            document.querySelector(formTarget),
-            'load',
-            this.bindMethod(this.addResizeScript, this)
-          );
-      };
-
-      wufooForm.display();
+    let scriptTag = document.createElement('script');
+    scriptTag.type = 'text/javascript';
+    scriptTag.onload = this.initWufooForm.bind(this);
     };
 
     let formContainer = document.querySelector(get(this, 'formTarget'));
@@ -121,8 +67,50 @@ export default Component.extend({
       formContainer && parentNode
     );
 
-    if (formContainer && parentNode) {
-      parentNode.insertBefore(s, formContainer);
-    }
+    // add wufoo script to document
+    document.head.appendChild(scriptTag);
+    scriptTag.src = `${
+      document.location.protocol
+    }//www.wufoo.com/scripts/embed/form.js`;
+  },
+
+  initWufooForm() {
+    let wufooForm = new WufooForm();
+
+    let options = {
+      // required
+      userName: get(this, 'userName'),
+      formHash: get(this, 'formId'),
+      // optional
+      autoResize: true,
+      height: '500',
+      header: 'show',
+      ssl: true,
+      // fixed
+      async: true,
+      host: 'wufoo.com'
+    };
+
+    wufooForm.initialize(options);
+
+    // override wufoo's method to inject the form into the component container
+    let formTarget = get(this, 'formTarget');
+    wufooForm.display = function() {
+      if (this.async) {
+        document.querySelector(
+          formTarget
+        ).innerHTML = this.generateFrameMarkup();
+      } else {
+        document.write(this.generateFrameMarkup());
+      }
+
+      window.postMessage ||
+        this.addEvent(
+          document.querySelector(formTarget),
+          'load',
+          this.bindMethod(this.addResizeScript, this)
+        );
+    };
+    wufooForm.display();
   }
 });
