@@ -3,7 +3,7 @@
 import layout from '../templates/components/wufoo-form';
 
 import Component from '@ember/component';
-import { get } from '@ember/object';
+import { get, set } from '@ember/object';
 import { computed } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
@@ -48,6 +48,7 @@ export default Component.extend({
     // don't run wufoo iframe content in tests
     let config = getOwner(this).resolveRegistration('config:environment');
     if (config.environment !== 'test') {
+      set(this, 'isLoading', true);
       this.appendWufooJs();
     }
   },
@@ -57,6 +58,9 @@ export default Component.extend({
     let scriptTag = document.createElement('script');
     scriptTag.type = 'text/javascript';
     scriptTag.onload = this.initWufooForm.bind(this);
+    scriptTag.onerror = () => {
+      set(this, 'isShowingFallback', true);
+      set(this, 'isLoading', false);
     };
 
     let formContainer = document.querySelector(get(this, 'formTarget'));
@@ -112,5 +116,6 @@ export default Component.extend({
         );
     };
     wufooForm.display();
+    set(this, 'isLoading', false);
   }
 });
