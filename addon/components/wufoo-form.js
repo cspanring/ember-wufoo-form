@@ -48,7 +48,6 @@ export default Component.extend({
     // don't run wufoo iframe content in tests
     let config = getOwner(this).resolveRegistration('config:environment');
     if (config.environment !== 'test') {
-      set(this, 'isLoading', true);
       this.appendWufooJs();
     }
   },
@@ -60,7 +59,6 @@ export default Component.extend({
     scriptTag.onload = this.initWufooForm.bind(this);
     scriptTag.onerror = () => {
       set(this, 'isShowingFallback', true);
-      set(this, 'isLoading', false);
     };
 
     let formContainer = document.querySelector(get(this, 'formTarget'));
