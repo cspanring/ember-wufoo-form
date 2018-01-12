@@ -3,10 +3,16 @@
 import layout from '../templates/components/wufoo-form';
 
 import Component from '@ember/component';
-import { get, set, getWithDefault } from '@ember/object';
+import { get, set } from '@ember/object';
 import { computed } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
+
+function getWithDefault(context, property, defaultValue) {
+  return get(context, property) === undefined
+    ? defaultValue
+    : get(context, property);
+}
 
 export default Component.extend({
   layout,
