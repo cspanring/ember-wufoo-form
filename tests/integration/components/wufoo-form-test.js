@@ -16,7 +16,7 @@ test('it shows fallback link', function(assert) {
     this.$()
       .text()
       .trim(),
-    'Fill out my online form.'
+    'Please fill out my online form.'
   );
   assert.ok(
     this.$()
